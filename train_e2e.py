@@ -201,6 +201,8 @@ def test(model):
     print('Entity linking accuracy on test iteration for top1= ' + str(entity_linking_acc(ent_linking)))
 
 
+
+
 def infer(text, model, top_k_ent=1):
     """
     Infer for single text
@@ -223,7 +225,16 @@ def infer(text, model, top_k_ent=1):
             if wikidata_ent_pred:
                 wikidata_ent_pred = wikidata_ent_pred.split('/')[-1]
             else:
-                wikidata_ent_pred = pred_fb_ent
+                ngrams = generate_ngrams(e_label_pred)
+                found = False
+                for agram in ngrams:
+                    result = fetch_entity(agram)
+                    if result:
+                        wikidata_ent_pred = result.split('/')[-1]
+                        found = True
+                        break
+                if not found:
+                    wikidata_ent_pred = pred_fb_ent
         print (wikidata_ent_pred)
         return wikidata_ent_pred, e_label_pred, pred_fb_ent
     else:
