@@ -6,9 +6,10 @@ from models.entity_det import EntityDetection
 from utils.util import threshold
 from torch.autograd import Variable
 from itertools import groupby
-
+from utils.args import get_args
 import math
 
+args = get_args()
 class Gumbel():
     def __init__(self, gpu):
         self.gpu = gpu
@@ -103,6 +104,10 @@ class E2E_entity_linker(nn.Module):
 
         # self.ent_linker = nn.Linear(1000, 1000)
         torch.nn.init.xavier_uniform_(self.soft_gate.weight)
+        self.stoi, vectors, dim = torch.load(args.vector_cache)
+        self.stoi['<unk>'] = len(self.stoi)
+        self.stoi['<pad>'] = 0  # add padding index and remove comma to another index
+        self.stoi[','] = len(self.stoi)
 
     def forward(self, text, e_label, t_mask, e_candidates, cand_labels, relations, reln_mask, reln_1hop, reln_1hop_mask,
                 cand_rank, c_wiki, train=True):
@@ -184,6 +189,13 @@ class E2E_entity_linker(nn.Module):
             return ent_pred_out, rel_out, ent_linker, amb_decision, cos_l.view(e_candidates.size(0), e_candidates.size(1)), \
                    cos_pooled.view(e_candidates.size(0), e_candidates.size(1))
 
+    def get_w2id(self,word):
+        # get word2ids
+        try:
+            return int(self.stoi[word])
+        except KeyError:
+            return int(self.stoi['<unk>'])
+
     def infer(self, q, text, t_mask, t2id, e2id, topk, e1hop, get_candidates):
         """
         module to use during inference
@@ -209,11 +221,11 @@ class E2E_entity_linker(nn.Module):
         relation_out = torch.argmax(rel_out)  # pred_relation
 
         for e in entities:
-            ent_w = torch.LongTensor([t2id(w) for w in e.split()]).to(next(self.parameters()).device)
+            ent_w = torch.LongTensor([self.get_w2id(w) for w in e.split()]).to(next(self.parameters()).device)
             ent_w_emb = self.embed(ent_w)
             _avg_x = ent_w_emb.mean(0)  # B X EMB
 
-            cand_l, cand_id, can_reln = get_candidates(e, t2id, topk, e2id, e1hop, text.device)
+            cand_l, cand_id, can_reln = get_candidates(e, self.get_w2id, topk, e2id, e1hop, text.device)
             # Get embedding for all entitity labels and average them
             ent_c_emb = self.embed(cand_l).mean(2).transpose(0, 1)  # B X E_CAND X EMB ==> E_CAND X B X EMB
             # Get cosine similarities for original entity with candidates for word embeddings
