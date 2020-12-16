@@ -12,7 +12,7 @@ pip install -r requirements.txt
 ```
 Now download the required files by running:
 ```
-python download.py
+python utils/download.py
 ```
 
 ### Interactive CLI:
