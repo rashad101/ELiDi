@@ -31,15 +31,40 @@ def save_response_content(response, destination, fname):
                 f.write(chunk)
 
 if __name__ == "__main__":
-    file_ids = ['1-m20o6ss8hQepb8qcuIVtM1jEydQOuho','1R4vscrsUhn2cJCFHj3F8VoH9s1U88H8A','1ppg5dwvQ_j4tl_aahcDpRrIMpux-Y9IH']
-    filenames = ['names_2M.pkl','reachability_2M.pkl','names.trimmed.2M.txt']
     data_root = "data"
-    datapaths = ["FB2M","freebase"]
+    datapaths = ["freebase","processed_simplequestions_dataset"]
 
-    if not os.path.exists("data/freebase/"):
-        os.makedirs("data/freebase")
+    files = {
+        "processed_simplequestions_dataset": [
+            {
+                "file-id":"11gEKSVqJbU4kOc8fqkIxUhQnzVysWmF6",
+                "filename":"train100.txt"
+            },
+            {
+                "file-id": "1N2c_eiVpbigdNop-_KwU1YPUjtSnKlh4",
+                "filename": "test100.txt"
+            },
+            {
+                "file-id": "1gxRrkikHIm2ESp_lW3somQvFP0qzuEUJ",
+                "filename": "valid100.txt"
+            }
+        ],
+        "freebase": [
+            {
+                "file-id": "1ppg5dwvQ_j4tl_aahcDpRrIMpux-Y9IH",
+                "filename": "names.trimmed.2M.txt"
+            }
+        ]
+    }
 
-    for i, id in enumerate(file_ids):
-        download_file_from_google_drive(id, f"data/freebase/{filenames[i]}", fname=filenames[i])
+    for apath in datapaths:
+        if not os.path.exists(os.path.join(data_root,apath)):
+            os.makedirs(os.path.join(data_root,apath))
 
-    print("All files downloaded succesfully !!")
+    for folder,v in files.items():
+        for afile in files[folder]:
+            print(f"Downloading {afile['filename']}...")
+            download_file_from_google_drive(afile["file-id"],destination=os.path.join(data_root,folder,afile["filename"]),fname=afile["filename"])
+            print("Done !!")
+
+    print("All files are downloaded succesfully !!")
