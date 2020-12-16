@@ -60,8 +60,12 @@ def infer(text, model, top_k_ent=1):
 def interact(model):
     question = input("Please type your question (type q to quit):  ")
     if question!="q":
-        wikiid,elabel,predfb = infer(question,model)
-        return wikiid, elabel
+        if question!="":
+            wikiid,elabel,predfb = infer(question,model)
+            return wikiid, elabel
+        else:
+            print("You have entered nothing !!")
+            return "",""
     else:
         return "q",""
 
@@ -91,8 +95,10 @@ if __name__=="__main__":
         wiki_id, ent_label = interact(model)
         if wiki_id=="q":
             exit()
+        elif wiki_id=="":
+            continue
         else:
-            print(f"Wiki entity ID: {wiki_id},\nWiki entity label: {ent_label}\n")
+            print(f"Wiki entity ID: {wiki_id}\nWiki entity label: {ent_label}\n")
 
 
 
