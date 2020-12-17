@@ -5,3 +5,4 @@ torch==1.7.1
 gensim
 tqdm
 requests
+unidecode
