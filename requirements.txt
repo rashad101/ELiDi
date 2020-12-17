@@ -6,3 +6,5 @@ gensim
 tqdm
 requests
 unidecode
+flask
+jsonify
