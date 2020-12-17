@@ -12,8 +12,6 @@ import re
 import warnings
 warnings.filterwarnings("ignore")
 
-args = get_args()
-
 def generate_ngrams(s, n=[1, 2, 3, 4]):
     words_list = s.split()
     ngrams_list = []
