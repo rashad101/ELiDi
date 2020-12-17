@@ -1,0 +1,67 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+    <style>
+        .container{
+            margin-top:50px;
+            margin-right:auto;
+            margin-bottom:0;
+            margin-left:auto;
+            max-width:800px;
+            min-width:800px;
+
+        }
+        #inputForm{
+            max-width:600px;
+            min-width:600px;
+        }
+
+        #product{
+        margin-bottom:30px;
+        }
+    </style>
+    <title>ELiDi</title>
+</head>
+<body>
+<div class="container">
+    <div>
+        <h2 id="product">ELiDi: End-to-End Entity Linking and Disambiguation</h2>
+    </div>
+    <div id="ThroughputRate" class="data_entry">
+    <form action="{{ url_for('home') }}" method="post" id="inputForm" enctype="multipart/form-data" class="ui action input form">
+        <input type="text" name="question" placeholder="Type your question here", class="input_box">
+        <button class="ui primary button" type="submit">Perform Linking</button>
+    </form>
+    <div id="value_lable">
+                {% for q in questions %}
+                    {{ q }}<br>
+                {% endfor %}
+    </div>
+</div>
+</div>
+
+
+</body>
+<script type="text/javascript">
+$("#inputForm").keyup(function(){
+    var text = $(this).val();
+
+    $.ajax({
+      url: "/",
+      type: "post",
+      data: {jsdata: text},
+      success: function(response) {
+        $("#value_lable").html(response);
+      },
+      error: function(xhr) {
+        //Do Something to handle error
+      }
+    });
+});
+</script>
+</html>
