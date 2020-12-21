@@ -28,8 +28,15 @@ python e2e_cli.py --gpu 1
 ```
 
 ### Web Demo:
-
-
+```
+python app.py
+```
 ### Training
+```
+python train_e2e.py
+```
 
 ### Evaluation
+```
+python utils/eval.py
+```
