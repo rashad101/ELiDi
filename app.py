@@ -163,8 +163,11 @@ def ask():
                 wikiurl = wikiurl_base+wikiid
                 processed_text = "<div><p><strong>WikiID:</strong>  " + wikiid + "</p><p><strong>Wiki entity label:</strong> " + elabel + "</p><p><strong>Linked entity:</strong>  " + wikiurl + "</p></div>"
             else:
-                wikiid, elabel, predfb = "", "", ""
-                processed_text = "<div><p><strong>WikiID:</strong>  " + wikiid + "</p><p><strong>Wiki entity label:</strong>  " + elabel + "</p><p><strong>Linked entity:</strong>  " + elabel + "</p></div>"
+                noans_template = '<div class="ui negative message" id="errmsg"><i class="close icon"></i><div class="header">Sorry, no match found !!</div><p>Rephrase the question and try again.</div>'
+                processed_text = noans_template
+        else:
+            noans_template = '<div class="ui negative message" id="errmsg"><i class="close icon"></i><div class="header">Sorry, no match found !!</div><p>Rephrase the question and try again.</div>'
+            processed_text = noans_template
     anstext = {"answer": processed_text}
 
     return jsonify(anstext)

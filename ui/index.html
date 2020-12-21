@@ -17,17 +17,24 @@
 
         }
         #inputForm{
-            max-width:600px;
-            min-width:600px;
+            max-width:800px;
+            min-width:800px;
         }
 
         #product{
             margin-bottom:30px;
+            width:auto;
         }
 
         #output{
+            margin-top:30px;
             max-width:800px;
             min-width:800px;
+            width:auto;
+        }
+        #errmsg{
+            max-width:700px;
+            min-width:700px;
         }
     </style>
     <title>ELiDi</title>
@@ -43,15 +50,34 @@
         <button class="ui primary button" type="submit">Perform Linking</button>
     </form>
     </div>
-    <div id="output">
 
+    <div id="loader_div" class="ui icon message">
+      <i class="notched circle loading icon"></i>
+      <div class="content">
+        <div class="header">
+          Just one second ...
+        </div>
+        <p>We're fetching that results for you.</p>
+      </div>
     </div>
+
+
+    <div class="ui placeholder segment">
+        <div class="ui icon header">
+        <i class="wikipedia w outline icon"></i>
+            <div id="hideit">There is nothing to show here.</div>
+        </div>
+            <div id="output">
+            </div>
+    </div>
+
+
 </div>
 
 
 </body>
 <script type="text/javascript">
-
+$("#loader_div").hide();
 function getDefaults() {
     // This function is used to return all the "metadata" that is collected from the frontend.
     // NOTE: OVERRIDE THIS FUNCTION WITH WHATEVER YOU REQUIRE.
@@ -79,9 +105,13 @@ $('#inputForm').api({
         }
 
         //Making Message
+        $("#loader_div").show();
+        $("#hideit").hide();
+
         let defaults = getDefaults();
         defaults.question = $('.input_box')[0].value;
         settings.data = JSON.stringify(defaults);
+
 
         return settings;
     },
@@ -100,6 +130,7 @@ $('#inputForm').api({
     onSuccess: function (response) {
         // If the JSON is as expected
         console.log("Received answer from /ask.");
+        $("#loader_div").hide();
         $('.input_box').value="";
         $('#output').html(response["answer"]);
 
