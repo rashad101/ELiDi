@@ -56,7 +56,7 @@ function getDefaults() {
     // This function is used to return all the "metadata" that is collected from the frontend.
     // NOTE: OVERRIDE THIS FUNCTION WITH WHATEVER YOU REQUIRE.
     return {
-            "msg":"",
+            "question":"",
         }
 }
 
@@ -80,7 +80,7 @@ $('#inputForm').api({
 
         //Making Message
         let defaults = getDefaults();
-        defaults["question"] = msg;
+        defaults.question = $('.input_box')[0].value;
         settings.data = JSON.stringify(defaults);
 
         return settings;

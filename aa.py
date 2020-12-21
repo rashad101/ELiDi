@@ -149,13 +149,13 @@ def interact(question):
 
 @app.route('/elidi')
 def home():
-    return render_template('index.html')
+    return render_template('index2.html')
 
 @app.route('/elidi', methods=['GET','POST'])
 def ask():
 
     if request.method == 'POST':
-        question = json.loads(request.data)["question"]
+        question = request.data["question"]
         if question:
             wikiid, elabel, predfb = interact(question)
             if wikiid != "":
