@@ -159,7 +159,9 @@ def ask():
         if question:
             wikiid, elabel, predfb = interact(question)
             if wikiid != "":
-                processed_text = "<div><p><strong>WikiID:</strong>  " + wikiid + "</p><p><strong>Wiki entity label:</strong> " + elabel + "</p><p><strong>Linked entity:</strong>  " + elabel + "</p></div>"
+                wikiurl_base = "https://www.wikidata.org/wiki/"
+                wikiurl = wikiurl_base+wikiid
+                processed_text = "<div><p><strong>WikiID:</strong>  " + wikiid + "</p><p><strong>Wiki entity label:</strong> " + elabel + "</p><p><strong>Linked entity:</strong>  " + wikiurl + "</p></div>"
             else:
                 wikiid, elabel, predfb = "", "", ""
                 processed_text = "<div><p><strong>WikiID:</strong>  " + wikiid + "</p><p><strong>Wiki entity label:</strong>  " + elabel + "</p><p><strong>Linked entity:</strong>  " + elabel + "</p></div>"
