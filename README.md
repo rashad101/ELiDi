@@ -27,9 +27,16 @@ In GPU:
 python e2e_cli.py --gpu 1
 ```
 
+![](https://github.com/rashad101/ELiDi/blob/main/elidi-demo.gif)
+
 ### Web Demo:
+First run the following command in your terminal:
 ```
 python app.py
+```
+Now, open your browser and go to the following address:
+```
+http://localhost:3355/elidi
 ```
 ### Training
 ```
