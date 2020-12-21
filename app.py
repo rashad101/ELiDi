@@ -12,7 +12,6 @@ from utils.util import load_model
 import re
 import warnings
 warnings.filterwarnings("ignore")
-
 template_dir = os.path.abspath("ui")
 app = Flask(__name__,template_folder=template_dir)
 args = get_args()
@@ -86,10 +85,10 @@ def infer(text, model, e2id,e_1hop, stoi, top_k_ent=1):
                         found = True
                         break
                 if not found:
-                    wikidata_ent_pred = 'Not found'
+                    wikidata_ent_pred = ''
         return wikidata_ent_pred, e_label_pred, pred_fb_ent
     else:
-        return 'Not found', 'Not found', 'Not found'
+        return '', '', ''
 
 
 # Set random seed
