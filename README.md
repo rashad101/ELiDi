@@ -1,7 +1,7 @@
 # ELiDi
 This repository includes all the code and data for the paper ELiDi (End-to-end Entity Linking and Disambiguation leveraging Word and Knowledge Graph Embeddings)
 
-
+![](https://github.com/rashad101/ELiDi/blob/main/elidi-demo.gif)
 ### Installation:
 * Python 3.8 (required)
 
@@ -26,8 +26,6 @@ In GPU:
 ```python
 python e2e_cli.py --gpu 1
 ```
-
-![](https://github.com/rashad101/ELiDi/blob/main/elidi-demo.gif)
 
 ### Web Demo:
 First run the following command in your terminal:
