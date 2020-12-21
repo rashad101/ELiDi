@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template,request
+from flask import Flask, render_template,request, jsonify
 import torch
 import numpy as np
 import json
@@ -153,20 +153,21 @@ def home():
 
 @app.route('/elidi', methods=['GET','POST'])
 def ask():
-    questions = []
 
     if request.method == 'POST':
-        text = request.form['question']
-        if text:
-            wikiid, elabel, predfb = interact(text)
-            if wikiid!="":
-                processed_text = f"<p>{wikiid}</p><p>{elabel}</p><p>{elabel}</p>"
+        question = request.data["question"]
+        if question:
+            wikiid, elabel, predfb = interact(question)
+            if wikiid != "":
+                processed_text = "<div><p><strong>WikiID:</strong>  " + wikiid + "</p><p><strong>Wiki entity label:</strong> " + elabel + "</p><p><strong>Linked entity:</strong>  " + elabel + "</p></div>"
             else:
-                processed_text = "Found nothing"
-            questions.append(processed_text)
-    return render_template('index.html', questions=questions)
+                wikiid, elabel, predfb = "", "", ""
+                processed_text = "<div><p><strong>WikiID:</strong>  " + wikiid + "</p><p><strong>Wiki entity label:</strong>  " + elabel + "</p><p><strong>Linked entity:</strong>  " + elabel + "</p></div>"
+    anstext = {"answer": processed_text}
+
+    return jsonify(anstext)
 
 
 if __name__=='__main__':
 
-    app.run(host='localhost', port=3000)
+    app.run(host='localhost', port=3355)

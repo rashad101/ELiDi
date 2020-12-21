@@ -3,9 +3,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+    <script src="{{ url_for('static', filename='jquery.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='semantic.min.css') }}">
+    <script src="{{ url_for('static', filename='semantic.min.js') }}"></script>
     <style>
         .container{
             margin-top:50px;
@@ -22,7 +22,12 @@
         }
 
         #product{
-        margin-bottom:30px;
+            margin-bottom:30px;
+        }
+
+        #output{
+            max-width:800px;
+            min-width:800px;
         }
     </style>
     <title>ELiDi</title>
@@ -33,35 +38,79 @@
         <h2 id="product">ELiDi: End-to-End Entity Linking and Disambiguation</h2>
     </div>
     <div id="ThroughputRate" class="data_entry">
-    <form action="{{ url_for('ask') }}" method="post" id="inputForm" enctype="multipart/form-data" class="ui action input form">
+    <form method="post" id="inputForm" enctype="multipart/form-data" class="ui action input form">
         <input type="text" name="question" placeholder="Type your question here", class="input_box">
         <button class="ui primary button" type="submit">Perform Linking</button>
     </form>
-    <div id="value_lable">
-                {% for q in questions %}
-                    {{ q }}<br>
-                {% endfor %}
     </div>
-</div>
+    <div id="output">
+
+    </div>
 </div>
 
 
 </body>
 <script type="text/javascript">
-$("#inputForm").keyup(function(){
-    var text = $(this).val();
 
-    $.ajax({
-      url: "/elidi",
-      type: "post",
-      data: {jsdata: text},
-      success: function(response) {
-        $("#value_lable").html(response);
-      },
-      error: function(xhr) {
-        //Do Something to handle error
-      }
-    });
+function getDefaults() {
+    // This function is used to return all the "metadata" that is collected from the frontend.
+    // NOTE: OVERRIDE THIS FUNCTION WITH WHATEVER YOU REQUIRE.
+    return {
+            "msg":"",
+        }
+}
+
+$.fn.api.settings.api = {
+    "echo": "elidi",
+};
+
+
+
+$('#inputForm').api({
+    action: 'echo',
+    method: 'POST',
+    dataType: 'JSON',
+    contentType: 'application/json',
+    beforeSend: function (settings) {
+        var msg = $('.input_box').text;
+
+        if (msg.length === 0 || msg.length >150) {
+            return false;
+        }
+
+        //Making Message
+        let defaults = getDefaults();
+        defaults["question"] = msg;
+        settings.data = JSON.stringify(defaults);
+
+        return settings;
+    },
+    successTest: function (response) {
+        // decide whether onSuccess/onFailure
+        return response.text.length > 0
+    },
+    onResponse: function (response) {
+        // Happens first.
+        return response;
+    },
+    onComplete: function (response) {
+        // clear message box after sending each message
+        $('.input_box')[0].value="";
+    },
+    onSuccess: function (response) {
+        // If the JSON is as expected
+        console.log("Received answer from /ask.");
+        $('.input_box').value="";
+        $('#output').html(response["answer"]);
+
+    },
+    onFailure: function (response) {
+        console.log('Ask: Could not understand the response');
+    }
+    // Overwrite callback for what happens when the server is dead.
 });
+
+
+
 </script>
 </html>
