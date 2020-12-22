@@ -3,11 +3,9 @@ Cython
 sklearn
 scikit-learn
 loguru
-numpy==1.13.3
 torch==1.7.1
 gensim
 tqdm
 requests
-unidecode
 flask
 jsonify
