@@ -1,0 +1,6 @@
+version: '3.8'
+services:
+  elidi:
+    build: .
+    ports:
+    - 3355:3355

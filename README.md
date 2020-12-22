@@ -27,15 +27,6 @@ In GPU:
 python e2e_cli.py --gpu 1
 ```
 
-### Web Demo:
-First run the following command in your terminal:
-```
-python app.py
-```
-Now, open your browser and go to the following address:
-```
-http://localhost:3355/elidi
-```
 ### Training
 ```
 python train_e2e.py
@@ -45,3 +36,14 @@ python train_e2e.py
 ```
 python utils/eval.py
 ```
+
+### Web Demo:
+First run the following command in your terminal:
+```
+python app.py
+```
+Now, open your browser and go to the following address:
+```
+http://localhost:3355/elidi
+```
+
