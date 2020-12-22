@@ -1,4 +1,5 @@
 unidecode
+numpy
 sklearn
 loguru
 torch==1.7.1
