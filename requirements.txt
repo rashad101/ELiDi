@@ -1,6 +1,7 @@
 unidecode
 numpy
 sklearn
+scikit-learn
 loguru
 torch==1.7.1
 gensim
