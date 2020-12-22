@@ -1,5 +1,4 @@
 unidecode
-numpy
 Cython
 sklearn
 scikit-learn
