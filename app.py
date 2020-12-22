@@ -159,15 +159,18 @@ def ask():
             wikiid, elabel, predfb = interact(question)
             if wikiid != "":
                 wikiurl_base = "https://www.wikidata.org/wiki/"
-                wikiurl = wikiurl_base+wikiid
-                processed_text = "<div><p><strong>WikiID:</strong>  " + wikiid + "</p><p><strong>Wiki entity label:</strong> " + elabel + "</p><p><strong>Linked entity:</strong>  " + wikiurl + "</p></div>"
+                wikiurl = wikiurl_base + wikiid
+                wikiurl = f'<a href="{wikiurl}" target="_blank">{wikiurl}</a>'
+                processed_text = "<div><p><strong>Wikidata ID:</strong>  " + wikiid + "</p><p><strong>Wikidata entity label:</strong> " + elabel + "</p><p><strong>Linked entity:</strong>  " + wikiurl + "</p></div>"
             else:
-                noans_template = '<div class="ui negative message" id="errmsg"><i class="close icon"></i><div class="header">Sorry, no match found !!</div><p>Rephrase the question and try again.</div>'
-                processed_text = noans_template
+                wikiid, elabel, predfb = "", "", ""
+                processed_text = "<div><p><strong>Wikidata ID:</strong>  " + wikiid + "</p><p><strong>Wikidata entity label:</strong>  " + elabel + "</p><p><strong>Linked entity:</strong></p></div>"
+
         else:
             noans_template = '<div class="ui negative message" id="errmsg"><i class="close icon"></i><div class="header">Sorry, no match found !!</div><p>Rephrase the question and try again.</div>'
             processed_text = noans_template
-    anstext = {"answer": processed_text}
+
+        anstext = {"answer": processed_text}
 
     return jsonify(anstext)
 
