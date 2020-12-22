@@ -17,6 +17,7 @@ ENV LC_ALL en_US.UTF-8
 
 # Project Dependencies
 COPY . .
-RUN pip install -r requirements.txt
+RUN pip3.8 install numpy
+RUN pip3.8 install -r requirements.txt
 CMD ["python3.8","utils/download.py"]
 CMD ["python3.8","app.py"]
