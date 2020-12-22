@@ -6,6 +6,8 @@ RUN apt update && \
     apt-get install -y python3.8 && \
     apt-get install -y python3.8-dev && \
     apt-get install -y python3-pip;
+RUN apt-get install -y curl
+RUN curl https://bootstrap.pypa.io/ez_setup.py -o - | python3.8 && python3.8 -m easy_install pip
 
 # Set the locale
 RUN apt-get clean && apt-get -y update && apt-get install -y locales && locale-gen en_US.UTF-8
