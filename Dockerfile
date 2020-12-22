@@ -16,4 +16,5 @@ ENV LC_ALL en_US.UTF-8
 # Project Dependencies
 COPY . .
 RUN pip install -r requirements.txt
-RUN python utils/download.py
+CMD ["python","utils/download.py"]
+CMD ["python","app.py"]
