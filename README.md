@@ -47,3 +47,8 @@ Now, open your browser and go to the following address:
 http://localhost:3355/elidi
 ```
 
+### Docker
+Run the program in Docker:
+```dockerfile
+sudo docker-compose up --build
+```

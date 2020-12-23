@@ -24,3 +24,4 @@ RUN pip install scikit-learn
 RUN pip install -r requirements.txt
 CMD ["python3.8","utils/download.py"]
 CMD ["python3.8","app.py"]
+EXPOSE 3355
