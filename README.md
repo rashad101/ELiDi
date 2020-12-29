@@ -29,9 +29,13 @@ python e2e_cli.py --gpu 1
 
 ### 🏋️ Training
 ```python
-python train_e2e.py
+python train_e2e.py --dataset <DATASET_NAME>
 ```
-
+Available options for <DATASET_NAME> are ```sq``` and ```webqsp```.
+### Testing
+```python
+python train_e2e.py --eval_only
+```
 ### ⚖️ Evaluation
 ```python
 python utils/eval.py
