@@ -1,4 +1,5 @@
 import torch
+import json
 import torch.nn.functional as F
 import numpy as np
 from utils.data_reader import SimpleQABatcher
@@ -11,6 +12,8 @@ from utils.entity_cand_gen import get_candidates, sq_wiki_test
 from utils.get_wikidata_mapping import get_wikidata_mapping, fetch_entity
 import time
 from utils.locs import *
+
+
 args = get_args()
 # Set random seed
 np.random.seed(args.randseed)
@@ -34,7 +37,6 @@ optimizer = torch.optim.Adam(parameter, lr=args.lr, weight_decay=args.weight_dec
 # convert to cuda for gpu
 if args.gpu:
     model.cuda()
-    #r_weight = qa.r_weights.cuda()
 
 
 def create_id2ent():
@@ -121,7 +123,6 @@ def run():
             print('Entity span detection f1:' + str(span_f1))
             print('Relation detection accuracy:' + str(reln_acc))
 
-    #test(model)
 
 
 def test(model):
@@ -201,6 +202,16 @@ def test(model):
     print('Entity linking accuracy on test iteration for top1= ' + str(entity_linking_acc(ent_linking)))
 
 
+def generate_ngrams(s, n=[1, 2, 3, 4]):
+    words_list = s.split()
+    ngrams_list = []
+
+    for num in range(0, len(words_list)):
+        for l in n:
+            ngram = ' '.join(words_list[num:num + l])
+            ngrams_list.append(ngram)
+    ngrams_list.sort(key=lambda x: len(x),reverse=True)
+    return ngrams_list
 
 
 def infer(text, model, top_k_ent=1):
@@ -293,60 +304,74 @@ def get_unique(pred_cands):
 
 
 if __name__ == '__main__':
-    # run()
-    # create_id2ent()
-    # test(model)
 
-    model = load_model(model, model_name, gpu=args.gpu)
-    model.eval()
-    data = 'sq'
-    print ('Loaded the model.....')
-    no_ent = []
-    sq_pred = []
-    # infer('what is a short-lived british sitcom series', model)
-    start_time = time.time()  # Get timing
-    if data == 'sq':
-        # evaluate sq wikidata
-        for d in sq_wiki_test:
-            g_sub = d[0]
-            query = d[3].replace('\'', ' \'').replace('?', '').lower()
-            pred_sub, e_span, fb_ent = infer(query, model)
-            if e_span:
-                if pred_sub == g_sub:
-                    sq_pred.append(1)
-                else:
-                    sq_pred.append(0)
-            else:
-                no_ent.append(query)
-                sq_pred.append(0)
-            ent_linker_out.write(g_sub + '\t' + query + '\t' + e_span + '\t' + pred_sub + '\n')
+    create_id2ent()
+
+    if not args.eval_only:
+        run()
+        test(model)
     else:
-        # evaluate on wikidata
-        for d in sq_wiki_test:
-            g_sub = d['main_entity']
-            query = d['utterance'].replace('\'', ' \'').replace('?', '').lower()
-            pred_sub, e_span, fb_ent = infer(query, model)
-            if e_span:
-                if pred_sub == g_sub:
-                    sq_pred.append(1)
+        model = load_model(model, model_name, gpu=args.gpu)
+        model.eval()
+        print ('Loaded the model.....')
+        no_ent = []
+        sq_pred = []
+        # infer('what is a short-lived british sitcom series', model)
+        start_time = time.time()  # Get timing
+        if args.dataset == 'sq':
+            # evaluate sq wikidata
+            save_f = []
+            for d in tqdm(sq_wiki_test, desc="Eval: "):
+                g_sub = d[0]
+                query = d[3].replace('\'', ' \'').replace('?', '').lower()
+                pred_sub, e_span, fb_ent = infer(query, model)
+                if e_span:
+                    if pred_sub == g_sub:
+                        sq_pred.append(1)
+                    else:
+                        sq_pred.append(0)
                 else:
+                    no_ent.append(query)
                     sq_pred.append(0)
-            else:
-                no_ent.append(query)
-                sq_pred.append(0)
-            ent_linker_out.write(g_sub + '\t' + query + '\t' + e_span + '\t' + pred_sub + '\n')
+
+                if pred_sub and e_span:
+                    save_f.append({
+                    "gold_ents": [g_sub],
+                    "query": query,
+                    "e_span": e_span,
+                    "pred_ent": pred_sub
+                    })
+                    ent_linker_out.write(g_sub + '\t' + query + '\t' + e_span + '\t' + pred_sub + '\n')
+            import json
+            json.dump(save_f,open("predictions/entity_linker_sq-wd.json","w"),indent=3)
+
+        else:
+            # evaluate on wikidata
+            for d in sq_wiki_test:
+                g_sub = d['main_entity']
+                query = d['utterance'].replace('\'', ' \'').replace('?', '').lower()
+                pred_sub, e_span, fb_ent = infer(query, model)
+                if e_span:
+                    if pred_sub == g_sub:
+                        sq_pred.append(1)
+                    else:
+                        sq_pred.append(0)
+                else:
+                    no_ent.append(query)
+                    sq_pred.append(0)
+                ent_linker_out.write(g_sub + '\t' + query + '\t' + e_span + '\t' + pred_sub + '\n')
 
 
-    # Close all files
-    print("--- %s seconds ---" % (time.time() - start_time))
-    print('Total size:', str(len(sq_wiki_test)))
-    print (np.average(sq_pred))
-    ent_linker_out.close()
-    ent_emb_avg_out.close()
-    cosine_distance_out.close()
-    all_ent_emb_avg.close()
-    all_kg_cos.close()
-    cand_rank.close()
-    predicted_reln_top3.close()
-    all_ent_score_out.close()
-    predicted_e_spans.close()
+        # Close all files
+        print("--- %s seconds ---" % (time.time() - start_time))
+        print('Total size:', str(len(sq_wiki_test)))
+        print (np.average(sq_pred))
+        ent_linker_out.close()
+        ent_emb_avg_out.close()
+        cosine_distance_out.close()
+        all_ent_emb_avg.close()
+        all_kg_cos.close()
+        cand_rank.close()
+        predicted_reln_top3.close()
+        all_ent_score_out.close()
+        predicted_e_spans.close()
