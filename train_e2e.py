@@ -216,7 +216,7 @@ def generate_ngrams(s, n=[1, 2, 3, 4]):
 
 def infer(text, model, top_k_ent=1):
     """
-    Infer for single text
+    Inference method for single text
     """
     print("Query:", text)
     text_w = torch.LongTensor([qa.get_w2id(w) for w in text.split()]).resize(1, len(text.split()))
@@ -246,7 +246,6 @@ def infer(text, model, top_k_ent=1):
                         break
                 if not found:
                     wikidata_ent_pred = pred_fb_ent
-        print (wikidata_ent_pred)
         return wikidata_ent_pred, e_label_pred, pred_fb_ent
     else:
         return '', '', ''
@@ -340,7 +339,7 @@ if __name__ == '__main__':
                 else:
                     save_f.append({"gold_ents": [g_sub],"query": query,"e_span": e_span,"pred_ent": None})
 
-            json.dump(save_f,open(f"predictions/entity_linker_{args.dataset}-wd.json","w"),indent=3)
+            json.dump(save_f, open(f"predictions/entity_linker_{args.dataset}-wd.json","w"),indent=3)
 
         else:
             # evaluate webqsp wikidata
