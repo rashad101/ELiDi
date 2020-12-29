@@ -3,10 +3,10 @@ from argparse import ArgumentParser
 
 def get_args():
     parser = ArgumentParser(description="Evaluation")
-    parser.add_argument('--filepath', type=str, required=True)
+    parser.add_argument('--dataset', type=str, required=True, help="sq or webqsp")
 
-def eval_dataset(filepath):
-    data = json.load(open(filepath))
+def eval_dataset(dataset):
+    data = json.load(open(F"predictions/entity_linker_{dataset}-wd.json"))
     tpentity = 0
     fpentity = 0
     fnentity = 0
