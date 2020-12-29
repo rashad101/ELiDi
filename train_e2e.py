@@ -1,5 +1,6 @@
 import torch
 import json
+import os
 import torch.nn.functional as F
 import numpy as np
 from utils.data_reader import SimpleQABatcher
@@ -304,6 +305,7 @@ def get_unique(pred_cands):
 
 if __name__ == '__main__':
 
+    os.makedirs("predictions", exist_ok=True)
     create_id2ent()
 
     if not args.eval_only:
