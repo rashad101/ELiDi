@@ -8,7 +8,7 @@ from utils.util import save_model, clip_gradient_threshold, load_model, get_f1, 
 from models.e2e_entity_linking import E2E_entity_linker
 from tqdm import tqdm
 from sklearn.metrics import f1_score, accuracy_score
-from utils.entity_cand_gen import get_candidates, sq_wiki_test
+from utils.entity_cand_gen import get_candidates, sq_wiki_test, websqp_questions
 from utils.get_wikidata_mapping import get_wikidata_mapping, fetch_entity
 import time
 from utils.locs import *
@@ -318,9 +318,9 @@ if __name__ == '__main__':
         sq_pred = []
         # infer('what is a short-lived british sitcom series', model)
         start_time = time.time()  # Get timing
+        save_f = []
         if args.dataset == 'sq':
             # evaluate sq wikidata
-            save_f = []
             for d in tqdm(sq_wiki_test, desc="Eval: "):
                 g_sub = d[0]
                 query = d[3].replace('\'', ' \'').replace('?', '').lower()
@@ -335,19 +335,16 @@ if __name__ == '__main__':
                     sq_pred.append(0)
 
                 if pred_sub and e_span:
-                    save_f.append({
-                    "gold_ents": [g_sub],
-                    "query": query,
-                    "e_span": e_span,
-                    "pred_ent": pred_sub
-                    })
+                    save_f.append({"gold_ents": [g_sub],"query": query, "e_span": e_span, "pred_ent": pred_sub})
                     ent_linker_out.write(g_sub + '\t' + query + '\t' + e_span + '\t' + pred_sub + '\n')
-            import json
-            json.dump(save_f,open("predictions/entity_linker_sq-wd.json","w"),indent=3)
+                else:
+                    save_f.append({"gold_ents": [g_sub],"query": query,"e_span": e_span,"pred_ent": None})
+
+            json.dump(save_f,open(f"predictions/entity_linker_{args.dataset}-wd.json","w"),indent=3)
 
         else:
-            # evaluate on wikidata
-            for d in sq_wiki_test:
+            # evaluate webqsp wikidata
+            for d in websqp_questions:
                 g_sub = d['main_entity']
                 query = d['utterance'].replace('\'', ' \'').replace('?', '').lower()
                 pred_sub, e_span, fb_ent = infer(query, model)
@@ -359,7 +356,14 @@ if __name__ == '__main__':
                 else:
                     no_ent.append(query)
                     sq_pred.append(0)
-                ent_linker_out.write(g_sub + '\t' + query + '\t' + e_span + '\t' + pred_sub + '\n')
+
+                if pred_sub and e_span:
+                    save_f.append({"gold_ents": [g_sub], "query": query, "e_span": e_span, "pred_ent": pred_sub})
+                    ent_linker_out.write(g_sub + '\t' + query + '\t' + e_span + '\t' + pred_sub + '\n')
+                else:
+                    save_f.append({ "gold_ents": [g_sub],"query": query, "e_span": e_span, "pred_ent": None})
+
+            json.dump(save_f, open(f"predictions/entity_linker_{args.dataset}-wd.json", "w"), indent=3)
 
 
         # Close all files
