@@ -15,7 +15,7 @@ Now download the required files by running:
 python utils/download.py
 ```
 
-### Interactive CLI:
+### 💻 Interactive CLI:
 To use the interactive command line interface, run:
 
 In CPU:
