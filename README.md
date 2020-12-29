@@ -34,11 +34,11 @@ python train_e2e.py --dataset <DATASET_NAME>
 Available options for ```<DATASET_NAME>``` are ```sq``` and ```webqsp```.
 ### 🎯 Testing
 ```python
-python train_e2e.py --eval_only
+python train_e2e.py --eval_only --dataset <DATASET_NAME>
 ```
 ### ⚖️ Evaluation
 ```python
-python utils/eval.py
+python utils/eval.py --dataset <DATASET_NAME>
 ```
 
 ### 🌐 Web Demo:
