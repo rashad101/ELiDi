@@ -6,12 +6,12 @@ This repository includes all the code and data for the paper ELiDi (End-to-end E
 * Python 3.8 (required)
 
 Run the following commands to install the required libraries
-```python
+```shell
 conda create -n elidi -y python=3.8 && conda activate elidi
 pip install -r requirements.txt
 ```
 Now download the required files by running:
-```
+```python
 python utils/download.py
 ```
 
@@ -28,18 +28,18 @@ python e2e_cli.py --gpu 1
 ```
 
 ### Training
-```
+```python
 python train_e2e.py
 ```
 
 ### Evaluation
-```
+```python
 python utils/eval.py
 ```
 
 ### Web Demo:
 First run the following command in your terminal:
-```
+```python
 python app.py
 ```
 Now, open your browser and go to the following address:
@@ -51,4 +51,9 @@ http://localhost:3355/elidi
 Run the program in Docker:
 ```dockerfile
 sudo docker-compose up --build
+```
+Alternatively, try the following commands:
+```dockerfile
+sudo docker build -t "elidi:Dockerfile" .
+sudo docker run -d -p 3355:3355 elidi:Dockerfile
 ```
