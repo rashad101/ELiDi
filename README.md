@@ -2,7 +2,7 @@
 This repository includes all the code and data for the paper ELiDi (End-to-end Entity Linking and Disambiguation leveraging Word and Knowledge Graph Embeddings)
 
 ![](https://github.com/rashad101/ELiDi/blob/main/elidi-demo.gif)
-### Installation:
+### 🔧 Installation:
 * Python 3.8 (required)
 
 Run the following commands to install the required libraries
