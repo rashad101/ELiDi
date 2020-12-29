@@ -1,4 +1,4 @@
-# ELiDi
+# ELiDi  
 This repository includes all the code and data for the paper ELiDi ([End-to-end Entity Linking and Disambiguation leveraging Word and Knowledge Graph Embeddings](https://openreview.net/pdf/cae4393d0817ad50aee6065e11a4d7487f8c4344.pdf))
 
 ![](https://github.com/rashad101/ELiDi/blob/main/elidi-demo.gif)
@@ -61,3 +61,5 @@ Alternatively, try the following commands:
 sudo docker build -t "elidi:Dockerfile" .
 sudo docker run -d -p 3355:3355 elidi:Dockerfile
 ```
+
+### 📜 License  <a href='https://opensource.org/licenses/MIT'><img src='https://img.shields.io/badge/License-MIT-blue.svg' alt='License'/></a>
