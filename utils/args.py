@@ -1,5 +1,6 @@
 from argparse import ArgumentParser
 
+
 def get_args():
     parser = ArgumentParser(description="Joint Prediction")
     parser.add_argument('--entity_detection_mode', type=str, required=False, help='options are LSTM, GRU', default='LSTM')
@@ -7,7 +8,7 @@ def get_args():
     parser.add_argument('--gpu', type=bool, default=False)
     parser.add_argument('--epochs', type=int, default=30)
     parser.add_argument('--batch_size', type=int, default=20)
-    parser.add_argument('--dataset', type=str, default="EntityDetection")
+    parser.add_argument('--dataset', type=str, default="sq", help="use sq or webqsp")
     parser.add_argument('--lr', type=float, default=0.001)
     parser.add_argument('--seed', type=int, default=3435)
     parser.add_argument('--dev_every', type=int, default=2000)
@@ -33,6 +34,7 @@ def get_args():
     parser.add_argument('--kg_embed', type=str, default="./data/transe_embeddings.npz")
     parser.add_argument('--weight_decay',type=float, default=0)
     parser.add_argument('--fix_embed', action='store_false', dest='train_embed')
+    parser.add_argument('--eval_only', action='store_true')
     parser.add_argument('--hits', type=int, default=100)
     parser.add_argument('--no_tqdm', default=False, action='store_true', help='disable tqdm progress bar')
     parser.add_argument('--randseed', type=int, default=666, metavar='', help='random seed (default: 666)')
