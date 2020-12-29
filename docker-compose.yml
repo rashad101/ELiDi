@@ -3,4 +3,4 @@ services:
   elidi:
     build: .
     ports:
-    - 3355:3355
+    - "3355:3355"
