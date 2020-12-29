@@ -20,7 +20,7 @@ To use the interactive command line interface, run:
 
 In CPU:
 ```python
-python e2e_cli.py
+python e2e_cli.py 
 ```
 In GPU:
 ```python
@@ -42,7 +42,7 @@ python utils/eval.py --dataset <DATASET_NAME>
 ```
 
 ### 🌐 Web Demo:
-First run the following command in your terminal:
+In order to run the web demo first complete the installation step. First run the following command in your terminal:
 ```python
 python app.py
 ```
