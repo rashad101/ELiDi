@@ -1,13 +1,8 @@
-# imports
-import pickle
 import numpy as np
-from collections import defaultdict
 import os
 import torch
 import unidecode
 import json
-import random
-import math
 from utils.args import get_args
 import pickle
 import re
@@ -92,30 +87,17 @@ class SimpleQABatcher:
         del (data)
 
         out['text'] = ([[self.get_w2id(w) for w in unidecode.unidecode(sent).split()] for sent in out['text']])
-        #out['pos_emb'] = ([self.get_positional_encoding(s) for s in out['text']])
         out['ed'] = ([[self.get_t2i(id) for id in l.split()] for l in out['ed']])
         out['entity'] = [[self.get_w2id(w) for w in e.split()] for e in out['entity']]
         out['sub'] = np.array([self.get_e2id(e) for e in out['sub']])
         out['relation'] = np.array([int(self.get_r2id(r)) for r in out['relation']])
-        #out['cand_labels'] = [[self.get_e2label(e) for e in es.split()] for es in out['entity_cand']]
         out['cand_labels'] = [[unidecode.unidecode(e.split('~')[1]) for e in es] for es in out['entity_cand']]
         out['entity_cand'] = [[self.get_e2id(e.split('~')[0]) for e in es] for es in out['entity_cand']]
-
-        #out['cand_labels'] = [es.split('~')[1] for es in out['entity_cand']]
-        #out['entity_cand'] = [self.get_e2id(es.split('~')[0]) for es in out['entity_cand']]
         out['cand_labels'] = [[[self.get_w2id(w) for w in label.split()] for label in labels] for labels in out['cand_labels']]
-        #out['cand_labels'] = [[e.split('~')[1] for e in es.split()] for es in out['entity_cand']]
         return out
 
     def get_e2id(self, entity):
-        #try:
         return int(self.e2id[entity])
-        #except KeyError:
-        #    self.ent404.write(entity+'\n')
-        #    return 0
-
-    # def get_e2label(self, entity):
-    #     return self.e2label[entity]
 
     def get_r2id(self, relation):
         try:
@@ -144,6 +126,7 @@ class SimpleQABatcher:
         string = re.sub(r"[^A-Za-z0-9(),!?\'\`\.]", " ", string)
         return string.strip()[1]
 
+
     def get_iter(self, dataset='train'):
         # get iterations.
         if dataset == 'train':
@@ -155,17 +138,12 @@ class SimpleQABatcher:
 
         for i in range(0, len(dataset['id']), self.batch_size):
             text = dataset['text'][i:i+self.batch_size]
-            #pos_emb = dataset['pos_emb'][i:i+self.batch_size]
             label = dataset['ed'][i:i+self.batch_size]
             sub = dataset['sub'][i:i + self.batch_size]
             sub_l = dataset['entity'][i:i + self.batch_size]
             relation = dataset['relation'][i:i + self.batch_size]
             ent_cand = dataset['entity_cand'][i:i + self.batch_size]
             cand_labels = dataset['cand_labels'][i:i + self.batch_size]
-            #cand_labels = dataset['cand_labels'][i:i + self.batch_size]
-            #shuffle entity candidates
-            #for c in ent_cand:
-            #    random.shuffle(c)
             t, l, m, g, s, c_s, r, r_m, e_c, c_l, c1h, c1hm, c_r, c_w = self._load_batch(text, label, sub, sub_l, relation, ent_cand, cand_labels, self.batch_size)
 
             yield t, l, m, g, s, c_s, r, r_m, e_c, c_l, c1h, c1hm, c_r, c_w
@@ -174,19 +152,11 @@ class SimpleQABatcher:
         b_s = min(b_s, len(text))
 
         max_r_1hop = np.max([np.max([len(self.e_1hop[e]) for e in e_c]) for e_c in cand])
-        #except KeyError:
-            
-        #    max_r_1hop = 10
         max_len = np.max([len(sent) for sent in text])
         max_len = (max_len + 1) if max_len < self.max_sent_len else self.max_sent_len
-        #max_len_candl = np.max([len(l) for l in cand_l])
         text_o = np.zeros([max_len, b_s], np.int)
-        #pos_emb = torch.zeros([b_s, max_len, self.dim])
         label_o = np.zeros([max_len, b_s], np.int)
-        #cand_o = np.zeros([self.ent_cand_s, b_s], np.int)
         sent_mask = np.zeros([max_len, b_s], np.int)
-        #cand_l = cand_l.astype(np.int32, copy=False)
-        #cand_l = np.reshape(cand_l, (cand.shape[1] * b_s, ))
         cand_l_o = np.zeros([b_s, self.ent_cand_s, 8], np.int)
         correct_s = np.zeros([b_s], np.int)
         cand_1hop_r = np.zeros([b_s, self.ent_cand_s, max_r_1hop], np.int)
@@ -198,18 +168,12 @@ class SimpleQABatcher:
 
         reln_mask = torch.zeros([b_s, len(self.r2id)])
 
-        #cand_one_hot = np.zeros([b_s, self.ent_cand_s], np.int)
-
         for j, (row_t, row_l) in enumerate(zip(text, label)):
             row_t = row_t[:max_len]
             row_l = row_l[:max_len]
-            # print (row_t, len(row_t))
             text_o[:len(row_t), j] = row_t
             label_o[:len(row_l), j] = row_l
             sent_mask[:len(row_t), j] = 1
-            #pos_emb[j, :len(row_t)] = pemb[j]
-            #reln_mask[j][self.e_1hop[sub[j]]] = 1
-            #train_reln = [r for r in self.train['relation']]
             reln_mask[j][self.train_reln] = 1
 
         for j, c in enumerate(cand_l):
@@ -233,12 +197,6 @@ class SimpleQABatcher:
                     for l, c in enumerate(can_1hop_rs):
                         cand_1hop_r[j][k][l] = c
                         cand_1hop_r_mask[j][k][l] = 1.0
-                    #else:
-                        # can_1hop_rs = self.e_1hop[s]
-                        # for l, c in enumerate(can_1hop_rs):
-                        #     cand_1hop_r[j][k][l] = c
-                        #     cand_1hop_r_mask[j][k][l] = 1
-                        #cand_one_hot[j][k] = 1
             else:
                 max_len_bat = float(np.max([len(self.e_1hop[b_c]) for b_c in c]))
                 correct_s[j] = np.random.random_integers(0, (self.ent_cand_s-1))
@@ -280,7 +238,6 @@ class SimpleQABatcher:
 
         return text_o.long(), label_o, sent_mask, sa_gate, subject, correct_s_o, relation, reln_mask, cand_o, cand_l_o, cand_1hop_r, \
                cand_1hop_r_mask, cand_rank, cand_wiki #, cand_one_hot.cuda()
-        #return text_o, label_o, sent_mask, subject, correct_s_o, relation, cand_o, cand_l_o, cand_one_hot.cuda()
 
 
 if __name__ == '__main__':
@@ -288,8 +245,3 @@ if __name__ == '__main__':
     train_iter = enumerate(qa.get_iter('train'))
     for it, mb in train_iter:
         t, l, m, s, c_s, r, r_m, c, cl, c1h, c1hm, c_rank, c_wiki = mb
-
-    #if not args.no_tqdm:
-    #    train_iter = tqdm(train_iter)
-    #    train_iter.set_description_str('Training')
-    #    train_iter.total = qa.n_train // qa.batch_size

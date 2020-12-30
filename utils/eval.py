@@ -1,9 +1,11 @@
 import json
 from argparse import ArgumentParser
 
+
 def get_args():
     parser = ArgumentParser(description="Evaluation")
     parser.add_argument('--dataset', type=str, required=True, help="sq or webqsp")
+
 
 def eval_dataset(dataset):
     data = json.load(open(F"predictions/entity_linker_{dataset}-wd.json"))
@@ -36,6 +38,7 @@ def eval_dataset(dataset):
     print("f1 entity = ",f1entity)
     return f1entity, precisionentity, recallentity
 
+
 if __name__=="__main__":
     args = get_args()
-    f1,p,r = eval_dataset(args.file_path)
+    f1, p, r = eval_dataset(args.file_path)

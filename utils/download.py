@@ -67,4 +67,4 @@ if __name__ == "__main__":
             download_file_from_google_drive(afile["file-id"],destination=os.path.join(data_root,folder,afile["filename"]),fname=afile["filename"])
             print("Done !!")
 
-    print("All files are downloaded succesfully !!")
+    print("All files are downloaded successfully !!")

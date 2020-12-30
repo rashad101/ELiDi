@@ -59,8 +59,6 @@ def get_char_f1(gold_batch, pred_batch, text_b, qa):
     gold_span = get_char_span(text_b, gold_batch, qa)
     pred_span = get_char_span(text_b, pred_batch, qa)
 
-    #print('PREDS: {}|\n|GOLD: {}|\n|TAGS: {}'.format(pred_span, gold_span, torch.t(gold_batch)[0]))
-
     total_en = len(gold_span)
     predicted = len(pred_span)
     for item in pred_span:
@@ -105,8 +103,6 @@ def get_f1(gold_batch, pred_batch, text_b, qa):
         f1 = 0
     else:
         f1 = 2 * precision * recall / (precision + recall)
-    #fout.flush()
-    #fout.close()
     return precision, recall, f1
 
 def get_f1_mit_span(gold_batch, pred_batch, text_b, qa):
@@ -132,6 +128,4 @@ def get_f1_mit_span(gold_batch, pred_batch, text_b, qa):
         f1 = 0
     else:
         f1 = 2 * precision * recall / (precision + recall)
-    #fout.flush()
-    #fout.close()
     return precision, recall, f1, pred_span

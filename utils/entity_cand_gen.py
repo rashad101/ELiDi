@@ -1,4 +1,3 @@
-# <snippet_imports>
 from gensim.corpora import Dictionary
 from gensim.models import TfidfModel
 from gensim.similarities import SparseMatrixSimilarity
@@ -6,23 +5,19 @@ from tqdm import tqdm
 import json
 import re
 import torch
-# </snippet_imports>
-# Created by Debanjan Chaudhuri at 12/12/2020
 
 websqp_question_f = 'data/processed_simplequestions_dataset/webqsp/webqsp_wd-test.json'  # webqsp dataset
-sq_wikidata_f = 'data/processed_simplequestions_dataset/sq_wikidata.txt'
+sq_wikidata_f = 'data/processed_simplequestions_dataset/sq_wikidata.txt' # simplequestions dataset
 fb2m_entities_f = 'data/freebase/names.trimmed.2M.txt'  # names of 2M entities
+
+questions = []
+sq_wiki_test = []
 
 # load the question
 with open(websqp_question_f, 'r', encoding='utf-8') as f:
     websqp_questions = json.load(f)
 with open(sq_wikidata_f, 'r', encoding='utf-8') as f:
     sq_w_dat = f.readlines()
-questions = []
-sq_wiki_test = []
-
-
-# def _load_questions(data='webqsp'):
 
 for q in websqp_questions:
     questions.append(q['utterance'].replace('\'', ' \'').replace('?', '').lower().split())

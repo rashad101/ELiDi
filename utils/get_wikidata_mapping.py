@@ -1,8 +1,4 @@
-# <snippet_imports>
 import requests
-# </snippet_imports>
-# Created by Debanjan Chaudhuri at 12/15/2020
-
 # Get the wikidata mapping for a freebase entity
 
 
@@ -50,4 +46,3 @@ def fetch_entity(entity):
 if __name__ == '__main__':
     wiki_map = get_wikidata_mapping("'/m/02sj6'")
     print (wiki_map)
-    # print(fetch_entity('jamaican'))
