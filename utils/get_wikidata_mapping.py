@@ -25,6 +25,7 @@ def get_wikidata_mapping(fb_id):
     try:
         r = requests.get(url, params={'format': 'json', 'query': query})
         data = r.json()
+        print("get_wikidata_mapping -> json, ", data)
         wiki_map = data['results']['bindings'][0]['item']['value']  # getting the mapping
     except Exception:
         wiki_map = ''
@@ -37,10 +38,12 @@ def fetch_entity(entity):
     try:
         wiki_ent_search_url = url_template.replace("ENTITY", '%20'.join(entity.split()))
         data = requests.get(url=wiki_ent_search_url).json()
-        wiki_map = data['search'][0]['url']
+        wiki_url = data['search'][0]['url']
+        wiki_id = data["search"][0]["id"]
+        wiki_label = data["search"][0]["label"]
     except Exception:
-        wiki_map = ''
-    return wiki_map
+        wiki_url, wiki_id, wiki_label = '','',''
+    return wiki_url, wiki_id,wiki_label
 
 
 if __name__ == '__main__':

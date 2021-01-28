@@ -67,12 +67,13 @@ def infer(text, model, e2id,e_1hop, stoi, top_k_ent=1):
         pred_ent_id = [p[0] for p in pred_ent[0]][:top_k_ent]  # sorted entities based on scores
         # print(pred_ent_id)
         pred_fb_ent = pred_ent_id[0].replace('fb:', '').replace('.', '/')
+        print("pred_fb_ent: ",pred_fb_ent)
         wikidata_ent_pred = get_wikidata_mapping(pred_fb_ent)
         # print(wikidata_ent_pred)
         if wikidata_ent_pred:  # check in wikidata fb mapping
             wikidata_ent_pred = wikidata_ent_pred.split('/')[-1]
         else:  # check as wikidata
-            wikidata_ent_pred = fetch_entity(e_label_pred)
+            wikidata_ent_pred,wikiid,e_label_pred = fetch_entity(e_label_pred)
             if wikidata_ent_pred:
                 wikidata_ent_pred = wikidata_ent_pred.split('/')[-1]
             else:
@@ -81,7 +82,7 @@ def infer(text, model, e2id,e_1hop, stoi, top_k_ent=1):
                 for agram in ngrams:
                     result = fetch_entity(agram)
                     if result:
-                        wikidata_ent_pred = result.split('/')[-1]
+                        wikidata_ent_pred,wikiid,e_label_pred = result.split('/')[-1]
                         found = True
                         break
                 if not found:
