@@ -68,7 +68,7 @@ def infer(text, model, e2id,e_1hop, stoi, top_k_ent=1):
         if wikidata_ent_pred:  # check in wikidata fb mapping
             wikidata_ent_pred = wikidata_ent_pred.split('/')[-1]
         else:  # check as wikidata
-            wikidata_ent_pred = fetch_entity(e_label_pred)
+            wikidata_ent_pred,wikiid,e_label_pred = fetch_entity(e_label_pred)
             if wikidata_ent_pred:
                 wikidata_ent_pred = wikidata_ent_pred.split('/')[-1]
             else:
@@ -77,7 +77,7 @@ def infer(text, model, e2id,e_1hop, stoi, top_k_ent=1):
                 for agram in ngrams:
                     result = fetch_entity(agram)
                     if result:
-                        wikidata_ent_pred = result.split('/')[-1]
+                        wikidata_ent_pred, wikiid, e_label_pred = result.split('/')[-1]
                         found = True
                         break
                 if not found:
