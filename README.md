@@ -39,7 +39,7 @@ ELiDi
     │      ├── sq_wikidata.txt
     │      ├── test100.txt
     │      ├── train100.txt
-    │      └── valid.txt
+    │      └── valid100.txt
     ├── fb2w_id.pkl
     └── sq_glove300d.pt
 ```
