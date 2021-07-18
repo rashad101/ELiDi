@@ -52,7 +52,7 @@ class RelationPrediction(nn.Module):
             H = torch.cat([fw, bw], dim=-1)  # S X B X H*2
             H = H.transpose(0, 1)  # B X S X H * 2
             M = F.tanh(H)  # B X S X H * 2
-            alpha = F.softmax(self.W(M.view(-1, self.h_dim*2)).view(-1, x.size(0)), dim=-1) * m.transpose(0, 1)  # B X S
+            alpha = F.softmax(self.W(M.reshape(-1, self.h_dim*2)).reshape(-1, x.size(0)), dim=-1) * m.transpose(0, 1)  # B X S
             alpha = alpha.unsqueeze(-1)  # B X S X 1
             r = torch.bmm(H.transpose(1, 2), alpha).squeeze(2)  # B X S X 1 ==> B X S
             h_star = F.tanh(r)
